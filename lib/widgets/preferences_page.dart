@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const String TEAS_SAVE_KEY = "teas";
 const String TEA_VESSEL_SIZE_SAVE_KEY = "tea_vessel_size";
 
 class PreferencesPage extends StatefulWidget {
@@ -31,6 +34,29 @@ class _PreferencesPageState extends State<PreferencesPage> {
   void _savePreferences() async {
     var prefs = await SharedPreferences.getInstance();
     prefs.setInt(TEA_VESSEL_SIZE_SAVE_KEY, PreferencesPage.teaVesselSizeMlPref);
+  }
+
+  Future<bool> _empty_tea_json() async{
+    var prefs = await SharedPreferences.getInstance();
+    // get path to teas file
+    var savedTeaStrings = prefs.getStringList(TEAS_SAVE_KEY);
+    return (savedTeaStrings == null || savedTeaStrings.length == 0);
+  }
+
+  void _create_backup() async {
+    var prefs = await SharedPreferences.getInstance();
+    // get path to teas file
+    var savedTeaStrings = prefs.getStringList(TEAS_SAVE_KEY);
+    // if teas file exists, load it
+    if (savedTeaStrings != null) {
+      var teasJson = json.encode(savedTeaStrings);
+      var test= "";
+    }
+  }
+
+  void _restore_backup() async {
+
+    // if teas file exists, load it
   }
 
   @override
@@ -80,6 +106,33 @@ class _PreferencesPageState extends State<PreferencesPage> {
                     }
                   },
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                      ),
+                      onPressed:() {_create_backup();},
+                      child: Text(
+                        "Backup", 
+                        style: TextStyle(
+                          color: Colors.white),
+                        ),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                      ),
+                      onPressed: (){},
+                      child: Text(
+                          "Restore",
+                          style: TextStyle(
+                            color: Colors.white),
+                        ),
+                    ),
+                  ]
+                )
               ],
             ),
           ),
